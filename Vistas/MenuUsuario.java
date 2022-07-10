@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -24,7 +25,9 @@ public class MenuUsuario extends javax.swing.JFrame {
     }
     
     private void listarEmpleados (){
-           
+        String nombre = buscar.getText();
+        if (nombre.isEmpty()) {
+            
         String query = "SELECT * FROM empleados";
         
         try {
@@ -45,8 +48,33 @@ public class MenuUsuario extends javax.swing.JFrame {
                 tbempleados.setModel(contenidoTablaEmpleados);
                 System.out.println("id" + empleado[0] + "nombre" + empleado[1] + "tipodoc" + empleado[2] + "doc" + empleado [3] + "correo" + empleado[4]);                                        
             }}catch(SQLException e){
-                
+                System.out.println("ERROR");
             }
+        } else {
+            
+        String query = "SELECT * FROM empleados WHERE nombre LIKE '%" + nombre + "%' OR apellidos LIKE '%" + nombre + "%';";
+        
+        try {
+            connection = conexion.getConnection();
+            st = connection.createStatement();
+            rs = st.executeQuery(query);
+            
+            Object [] empleado = new Object[5];
+            contenidoTablaEmpleados = (DefaultTableModel)tbempleados.getModel();
+            
+            while(rs.next()){
+                empleado[0] = rs.getInt("id");
+                empleado[1] = rs.getString("nombreemp") + " " + rs.getString("apellidos");
+                empleado[2] = rs.getString("tipodocumento");
+                empleado[3] = rs.getString("documento");
+                empleado[4] = rs.getString("correo");
+                contenidoTablaEmpleados.addRow(empleado);
+                tbempleados.setModel(contenidoTablaEmpleados);
+                System.out.println("id" + empleado[0] + "nombre" + empleado[1] + "tipodoc" + empleado[2] + "doc" + empleado [3] + "correo" + empleado[4]);                                        
+            }}catch(SQLException e){
+                System.out.println("ERROR");
+            }            
+        }
     }
     
     private void borrarRegistrosTabla(){
@@ -73,6 +101,9 @@ public class MenuUsuario extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        buscar = new javax.swing.JTextField();
+        btbuscar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,6 +130,11 @@ public class MenuUsuario extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tbempleados.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbempleadosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbempleados);
         if (tbempleados.getColumnModel().getColumnCount() > 0) {
             tbempleados.getColumnModel().getColumn(2).setResizable(false);
@@ -121,6 +157,11 @@ public class MenuUsuario extends javax.swing.JFrame {
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/editUser.png"))); // NOI18N
         jButton3.setText("Editar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/deleteUser.png"))); // NOI18N
         jButton4.setText("Eliminar");
@@ -133,55 +174,77 @@ public class MenuUsuario extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("MisionTIC 2022");
 
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel4.setText("Buscar:");
+
+        btbuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/showUser.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(200, 200, 200)
+                .addComponent(jLabel4)
+                .addGap(24, 24, 24)
+                .addComponent(buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btbuscar)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(81, 81, 81)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(82, 82, 82)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(130, 130, 130))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(162, 162, 162)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(81, 81, 81)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(82, 82, 82)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addGap(237, 237, 237)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 97, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 665, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(178, 178, 178)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel2)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(adduser, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                            .addGap(128, 128, 128)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 665, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(156, Short.MAX_VALUE))
+                                .addGap(48, 48, 48))
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(adduser, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(69, 69, 69))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(adduser))
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(adduser))))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btbuscar))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42)
+                .addGap(35, 35, 35)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton3)
                     .addComponent(jButton4))
-                .addGap(0, 39, Short.MAX_VALUE))
+                .addGap(26, 26, 26))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -190,8 +253,8 @@ public class MenuUsuario extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,6 +292,63 @@ public class MenuUsuario extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void tbempleadosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbempleadosMouseClicked
+        //1. Capturar el número de fila seleccionada
+        int row = tbempleados.getSelectedRow();
+        System.out.println("Fila seleccionada " + row);
+        //2. Validar si el usuario no ha seleccionado una fila
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecciona un empleado ", "", JOptionPane.WARNING_MESSAGE);
+        } else  {
+            
+            int ID = Integer.parseInt(tbempleados.getValueAt(row, 0).toString());
+            
+            String nombre = (String) tbempleados.getValueAt (row, 1);
+            String apellidos = (String) tbempleados.getValueAt (row, 2);
+            String tipodoc = (String) tbempleados.getValueAt (row, 3);
+            String documento = (String) tbempleados.getValueAt (row, 4);
+            String corr = (String) tbempleados.getValueAt (row, 5);
+            
+            System.out.println("Id: " + ID + ", empleado: " + nombre + " " + apellidos+ ", tipo documento: " + tipodoc + ", numero: " + documento+ ", correo: " + corr);
+            
+            //4. Instanciamos el JDialog para mostrar la información del empleado seleccionado
+            
+            ShowUserForm showUserForm = new ShowUserForm(this, true);
+            showUserForm.recibedatos (ID, nombre, apellidos, documento, corr);
+            showUserForm.setVisible (true) ;
+
+        }
+        
+    }//GEN-LAST:event_tbempleadosMouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        
+        int filaseleccionada = tbempleados.getSelectedRow();
+        System.out.println(filaseleccionada );
+        System.out.println("Fila Seleccionada " + filaseleccionada);
+        //2. Validar si el usuario no ha seleccionado una fila
+        if (filaseleccionada < 0) {
+            JOptionPane.showMessageDialog(this, "Selecciona un empleado ", "", JOptionPane.WARNING_MESSAGE);
+        } else  {
+            
+            int ID = Integer.parseInt(tbempleados.getValueAt(filaseleccionada, 0).toString());
+            
+            String nombre = (String) tbempleados.getValueAt (filaseleccionada, 1);
+            String apellidos = (String) tbempleados.getValueAt (filaseleccionada, 2);
+            String tipodoc = (String) tbempleados.getValueAt (filaseleccionada, 3);
+            String documento = (String) tbempleados.getValueAt (filaseleccionada, 4);
+            String corr = (String) tbempleados.getValueAt (filaseleccionada, 5);
+            
+            System.out.println("Id: " + ID + ", empleado: " + nombre + " " + apellidos+ ", tipo documento: " + tipodoc + ", numero: " + documento+ ", correo: " + corr);
+            
+            //4. Instanciamos el JDialog para mostrar la información del empleado seleccionado
+            
+            ShowUserForm showUserForm = new ShowUserForm(this, true);
+            showUserForm.recibedatos (ID, nombre, apellidos, documento, corr);
+            showUserForm.setVisible (true) ;
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -255,21 +375,22 @@ public class MenuUsuario extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MenuUsuario().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new MenuUsuario().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton adduser;
+    private javax.swing.JButton btbuscar;
+    private javax.swing.JTextField buscar;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

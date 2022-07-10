@@ -11,9 +11,13 @@ import Modelo.*;
 import java.sql.PreparedStatement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 
 
 public class NewUser extends javax.swing.JDialog {
+    
+    ComboBoxModel modeloEnumTipoDocumento;
 
     Conexion conexion = new Conexion();
     Connection connection;
@@ -26,7 +30,8 @@ public class NewUser extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         
-       this.setLocationRelativeTo(parent);
+        modeloEnumTipoDocumento = new DefaultComboBoxModel (TipoDocumentoEnum.values());
+        this.setLocationRelativeTo(parent);
     }
 
 
@@ -240,26 +245,16 @@ public class NewUser extends javax.swing.JDialog {
            int res = pst.executeUpdate();
            
            if (res > 0){
-                JOptionPane.showMessageDialog(this,"El usuario ha sido registrado");
+               JOptionPane.showMessageDialog(this,"El usuario ha sido registrado");
 
            } else {
                JOptionPane.showMessageDialog(this, "EL usuario no ha sido creado");
            }
-            
-        //String query = "INSERT INTO empleados (nombreemp, apellidos, tipodocumento, documento, correo) VALUES ('"+ nombree + "','" +apell+ "','" +tipodoc+ "','" +documento+ "','" +corr+ "')";
-          //  try {
-            //    connection = conexion.getConnection();
-              //  st = connection.createStatement();
-        //        st.executeUpdate(query);
-         //       JOptionPane.showMessageDialog(this,"El usuario ha sido registrado");
-         //   }catch (SQLException e){
-         //       JOptionPane.showMessageDialog(this, "EL usuario no ha sido creado");
-         //   
-          //  }
-       
+
         } catch (SQLException ex) {
-            Logger.getLogger(NewUser.class.getName()).log(Level.SEVERE, null, ex);
+               System.out.println("ERROR");
         }
+           
         this.dispose();
         
     }//GEN-LAST:event_guardarActionPerformed

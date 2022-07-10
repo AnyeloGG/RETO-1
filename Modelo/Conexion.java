@@ -9,7 +9,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -41,8 +41,5 @@ public class Conexion {
      return connection;
     }
 
-    public Statement createStatement() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
 }
